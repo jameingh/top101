@@ -13,23 +13,27 @@ import java.util.Stack;
  */
 public class Solution2 {
 
-    public int[] preorderTraversal(TreeNode root) {
-        List<Integer> list = new ArrayList(); //添加遍历结果的数组
-        Stack<TreeNode> s = new Stack<>();
-        if (root == null) //空树返回空数组
-            return new int[0];
-        s.push(root); //根节点先进栈
-        while (!s.isEmpty()) {
-            TreeNode node = s.pop(); //每次栈顶就是访问的元素
-            list.add(node.val);
-            if (node.right != null) //如果右边还有右子节点进栈
-                s.push(node.right);
-            if (node.left != null) //如果左边还有左子节点进栈
-                s.push(node.left);
+    public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList();
+        if (root == null) {
+            return list;
         }
-        int[] res = new int[list.size()]; //返回的结果
-        for (int i = 0; i < list.size(); i++)
-            res[i] = list.get(i);
-        return res;
+        Stack<TreeNode> s = new Stack<>();
+        //根节点先进栈
+        s.push(root);
+        while (!s.isEmpty()) {
+            //每次栈顶就是访问的元素
+            TreeNode node = s.pop();
+            list.add(node.val);
+            //如果右边还有右子节点进栈
+            if (node.right != null) {
+                s.push(node.right);
+            }
+            //如果左边还有左子节点进栈
+            if (node.left != null) {
+                s.push(node.left);
+            }
+        }
+        return list;
     }
 }

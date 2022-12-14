@@ -13,23 +13,25 @@ import java.util.Stack;
  */
 public class Solution2 {
 
-    public int[] inorderTraversal(TreeNode root) {
-        List<Integer> list = new ArrayList(); //添加遍历结果的数组
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        if (root == null) {
+            return list;
+        }
         Stack<TreeNode> s = new Stack<>();
-        if (root == null) //空树返回空数组
-            return new int[0];
-        while (root != null || !s.isEmpty()) { //当树节点不为空或栈中有节点时
-            while (root != null) { //每次找到最左节点
+        //当树节点不为空或栈中有节点时
+        while (root != null || !s.isEmpty()) {
+            // 从 root 节点进入，沿着左子树不断遍历，把父节点、左子节点 push 进栈
+            while (root != null) {
                 s.push(root);
                 root = root.left;
             }
-            TreeNode node = s.pop(); //访问该节点
+            // pop 栈顶节点
+            TreeNode node = s.pop();
             list.add(node.val);
-            root = node.right; //进入右节点
+            // 让 root 指向右子树的根节点，在下一次循环时，遍历 node 的右子树
+            root = node.right;
         }
-        int[] res = new int[list.size()]; //返回的结果
-        for (int i = 0; i < list.size(); i++)
-            res[i] = list.get(i);
-        return res;
+        return list;
     }
 }

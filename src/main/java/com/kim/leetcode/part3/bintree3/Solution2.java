@@ -3,8 +3,7 @@ package com.kim.leetcode.part3.bintree3;
 import com.kim.leetcode.part3.TreeNode;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
@@ -15,28 +14,35 @@ import java.util.Stack;
  */
 public class Solution2 {
 
-    public int[] postorderTraversal(TreeNode root) {
-        List<Integer> list = new ArrayList(); //添加遍历结果的数组
-        Stack<TreeNode> s = new Stack<TreeNode>();
-        TreeNode pre = null;
-        while (root != null || !s.isEmpty()) {
-            while (root != null) { //每次先找到最左边的节点
-                s.push(root);
-                root = root.left;
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> list = new LinkedList<>();
+        Stack<TreeNode> stack = new Stack<>();
+
+        while (root != null || !stack.isEmpty()) {
+            while (root != null) {
+                // 把根节点 push 入栈
+                stack.push(root);
+                // 把右子节点 push 入栈，并把右指针设为 null
+                if (root.right != null) {
+                    stack.push(root.right);
+                    root.right = null;
+                }
+                // 指向左子节点，在下一个循环时，把左子节点 push 入栈，把左指针设为 null
+                TreeNode tmp = root.left;
+                root.left = null;
+                root = tmp;
             }
-            TreeNode node = s.pop(); //弹出栈顶
-            if (node.right == null || node.right == pre) { //如果该元素的右边没有或是已经访问过
-                list.add(node.val); //访问中间的节点
-                pre = node; //且记录为访问过了
+            // pop 出栈顶节点，如果没有子节点，就添加进结果集
+            // 如果一个节点左右指针都是 null，要么它是叶子节点，要么它的子节点都已经进栈了，可以把该节点遍历进结果集
+            TreeNode node = stack.pop();
+            if (node.left == null && node.right == null) {
+                list.add(node.val);
             } else {
-                s.push(node); //该节点入栈
-                root = node.right; //先访问右边
+                // 如果有子节点，就作为子树的根节点，继续添加进栈中
+                root = node;
             }
         }
-        int[] res = new int[list.size()]; //返回的结果
-        for (int i = 0; i < list.size(); i++)
-            res[i] = list.get(i);
-        return res;
+        return list;
     }
 
     @Test
@@ -48,7 +54,7 @@ public class Solution2 {
         root.right.left.right = new TreeNode(9);
         root.right.right = new TreeNode(0);
         root.left.left = new TreeNode(6);
-        final int[] result = postorderTraversal(root);
-        Arrays.stream(result).forEach(System.out::println);
+        final List<Integer> result = postorderTraversal(root);
+        result.forEach(System.out::print);
     }
 }
